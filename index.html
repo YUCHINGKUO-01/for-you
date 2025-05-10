@@ -94,7 +94,10 @@
 
     <canvas id="canvas"></canvas>
   </div>
-
+// 如果在 LINE 裡開啟，自動導到外部瀏覽器
+if (navigator.userAgent.toLowerCase().includes("line")) {
+  window.location.href = "googlechrome://yuchingkuo-01.github.io/for-you/";
+}
   <script>
     function updateSignature() {
       const name = document.getElementById('nameInput').value.trim();
