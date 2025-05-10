@@ -1,138 +1,111 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>給媽媽的一句話</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>母親節卡片</title>
   <style>
     body {
+      margin: 0;
       font-family: "Microsoft JhengHei", sans-serif;
-      text-align: center;
       background-color: #fffdf8;
       padding: 20px;
+      text-align: center;
     }
-    h1 {
-      font-size: 24px;
-      margin-bottom: 10px;
-    }
-    input[type="text"] {
-      font-size: 18px;
-      padding: 8px 12px;
-      width: 80%;
-      max-width: 300px;
-      margin-bottom: 10px;
-    }
-    button {
-      padding: 10px 16px;
-      font-size: 16px;
-      margin: 5px;
-      background-color: pink;
-      border: none;
-      border-radius: 5px;
-    }
-    #card-container {
-      position: relative;
-      display: inline-block;
-      margin-top: 20px;
-    }
-    #card-img {
-      width: 100%;
-      max-width: 400px;
-      height: auto;
-    }
-    #signature {
-      position: absolute;
-      bottom: 18%;
-      left: 53%;
-      transform: translate(-50%, 50%);
-      font-size: 20px;
-      font-family: "Microsoft JhengHei", sans-serif;
-      color: #a83232;
-      font-weight: bold;
-    }
-    canvas {
+    #line-block {
       display: none;
+      border: 2px dashed #f88;
+      padding: 20px;
+      margin-top: 30px;
+      background-color: #fff0f0;
+    }
+    #line-block p {
+      font-size: 18px;
+      margin: 10px 0;
+      color: #222;
+    }
+    #line-block button {
+      background-color: #fbb;
+      border: none;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 5px;
     }
   </style>
 </head>
 <body>
+  <div id="line-block">
+    <p><strong>LINE 內建瀏覽器會擋住下載功能</strong></p>
+    <p>請點下方按鈕開啟 Chrome 或 Safari</p>
+    <button onclick="openInBrowser()">用瀏覽器開啟</button>
+  </div>
 
-<!-- 自動跳轉外部瀏覽器（僅 LINE） -->
-<script>
-  if (navigator.userAgent.toLowerCase().includes("line")) {
-    window.location.href = "googlechrome://yuchingkuo-01.github.io/for-you/";
-  }
-</script>
+  <div id="main-app" style="display: none;">
+    <h1>給媽媽的一句話</h1>
+    <input type="text" id="nameInput" placeholder="在這裡輸入你的名字（或小名）" />
+    <br /><br />
+    <button onclick="updateSignature()">寫上我的名字</button>
+    <button onclick="downloadImage()">下載卡片送出愛</button>
+    <br /><br />
+    <div id="card-container">
+      <img id="card-img" src="card.png" alt="卡片圖片" style="max-width: 100%; height: auto;" />
+      <div id="signature" style="
+        font-size: 20px;
+        position: absolute;
+        top: 480px;
+        left: 50%;
+        transform: translateX(-50%);
+        color: #800000;
+        font-weight: bold;
+        font-family: 'Microsoft JhengHei', sans-serif;
+      "></div>
+    </div>
+    <canvas id="canvas" width="800" height="1200" style="display:none;"></canvas>
+  </div>
 
-<h1>給媽媽的一句話</h1>
-<input type="text" id="nameInput" placeholder="在這裡輸入你的名字（或小名）" />
-<br>
-<button onclick="updateSignature()">寫上我的名字</button>
-<button onclick="showImage()">下載卡片送出愛</button>
-<button onclick="shareToLine()">分享到 LINE</button>
+  <script>
+    if (navigator.userAgent.toLowerCase().includes("line")) {
+      document.getElementById("line-block").style.display = "block";
+    } else {
+      document.getElementById("main-app").style.display = "block";
+    }
 
-<div id="card-container">
-  <img id="card-img" src="card.png" alt="卡片圖片">
-  <div id="signature"></div>
-  <canvas id="canvas" width="800" height="1200"></canvas>
-</div>
+    function openInBrowser() {
+      const ua = navigator.userAgent.toLowerCase();
+      const url = "https://yuchingkuo-01.github.io/for-you/";
+      if (ua.includes("iphone") || ua.includes("ipad")) {
+        window.location.href = "googlechrome://" + url.replace(/^https?:\/\//, "");
+      } else {
+        window.location.href = url;
+      }
+    }
 
-<script>
-  function updateSignature() {
-    const name = document.getElementById("nameInput").value.trim();
-    document.getElementById("signature").textContent = name || "";
-  }
+    function updateSignature() {
+      const name = document.getElementById("nameInput").value.trim();
+      document.getElementById("signature").textContent = name || "";
+    }
 
-  function showImage() {
-    document.fonts.ready.then(() => {
+    function downloadImage() {
       const canvas = document.getElementById("canvas");
       const ctx = canvas.getContext("2d");
       const img = document.getElementById("card-img");
+      const text = document.getElementById("signature").textContent;
 
       canvas.width = img.naturalWidth;
       canvas.height = img.naturalHeight;
-
       ctx.drawImage(img, 0, 0);
+
       ctx.font = "48px Microsoft JhengHei";
-      ctx.fillStyle = "#a83232";
+      ctx.fillStyle = "#800000";
       ctx.textAlign = "center";
-      ctx.textBaseline = "middle";
-      ctx.shadowColor = "white";
-      ctx.shadowBlur = 2;
+      ctx.fillText(text, canvas.width / 2, 1080);
 
-      const name = document.getElementById("nameInput").value.trim();
-      ctx.fillText(name, canvas.width * 0.53, canvas.height * 0.82);
-
-      const dataUrl = canvas.toDataURL("image/png");
-      const win = window.open();
-      win.document.write(`<img src="${dataUrl}" style="width:100%;max-width:500px;">`);
-    });
-  }
-
-  function shareToLine() {
-    const canvas = document.getElementById("canvas");
-    const dataUrl = canvas.toDataURL("image/png");
-    const blob = dataURLtoBlob(dataUrl);
-    const file = new File([blob], "mom-card.png", { type: "image/png" });
-
-    if (navigator.canShare && navigator.canShare({ files: [file] })) {
-      navigator.share({
-        files: [file],
-      });
-    } else {
-      alert("裝置不支援直接分享，請長按圖片儲存後手動傳送");
+      const link = document.createElement("a");
+      link.download = "mothers_card.png";
+      link.href = canvas.toDataURL("image/png");
+      link.click();
     }
-  }
-
-  function dataURLtoBlob(dataUrl) {
-    const arr = dataUrl.split(","), mime = arr[0].match(/:(.*?);/)[1],
-      bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
-    for (let i = 0; i < n; i++) {
-      u8arr[i] = bstr.charCodeAt(i);
-    }
-    return new Blob([u8arr], { type: mime });
-  }
-</script>
-
+  </script>
 </body>
 </html>
