@@ -7,7 +7,7 @@
   <title>給媽媽的一句話</title>
   <style>
     body {
-      font-family: 'Microsoft JhengHei', sans-serif;
+      font-family: 'ZCOOL XiaoWei', sans-serif;
       text-align: center;
       background-color: #fffdf8;
       padding: 20px;
@@ -52,7 +52,7 @@
       color: #000000;
       font-size: 28px;
       font-weight: bold;
-      font-family: 'Microsoft JhengHei', sans-serif;
+      font-family: 'ZCOOL XiaoWei', sans-serif;
       text-shadow: 1px 1px 2px white;
     }
     #line-block {
@@ -72,7 +72,9 @@
   <div id="line-block" style="display:none;">
     <h3>LINE 內建瀏覽器會擋住下載功能</h3>
     <p>請點下方按鈕，開啟 Chrome 或 Safari 使用</p>
-    <button onclick="openInBrowser()">用瀏覽器開啟</button>
+    <a href="https://yuchingkuo-01.github.io/happy-life/" target="_blank">
+      <button>用瀏覽器開啟</button>
+    </a>
   </div>
 
   <div id="main-app" style="display:none;">
@@ -110,8 +112,7 @@
         canvas.height = image.height;
 
         ctx.drawImage(image, 0, 0);
-
-        ctx.font = "48px Microsoft JhengHei";
+        ctx.font = "48px ZCOOL XiaoWei";
         ctx.fillStyle = "#000000";
         ctx.textAlign = "right";
         ctx.textBaseline = "bottom";
@@ -125,11 +126,6 @@
       };
     }
 
-    function openInBrowser() {
-      window.location = window.location.href;
-    }
-
-    // 判斷是否為 LINE 瀏覽器
     const isLine = navigator.userAgent.toLowerCase().includes("line");
     if (isLine) {
       document.getElementById("line-block").style.display = "block";
