@@ -7,160 +7,124 @@
   <title>母親節卡片</title>
   <style>
     body {
-      font-family: "Microsoft JhengHei", sans-serif;
+      font-family: 'Microsoft JhengHei', sans-serif;
+      background-color: #fffaf4;
       text-align: center;
       margin: 0;
       padding: 20px;
-      background-color: #fffdf8;
     }
     h1 {
       font-size: 28px;
+      font-family: 'Microsoft JhengHei', sans-serif;
       margin-bottom: 20px;
     }
     input[type="text"] {
-      font-family: "Microsoft JhengHei", sans-serif;
       font-size: 20px;
-      padding: 12px 16px;
+      padding: 10px;
       width: 80%;
-      max-width: 400px;
+      max-width: 300px;
     }
     button {
       font-size: 16px;
+      margin: 10px;
       padding: 10px 16px;
-      margin: 10px 5px;
-      cursor: pointer;
       background-color: pink;
       border: none;
       border-radius: 6px;
+      cursor: pointer;
     }
     #card-container {
       position: relative;
       display: inline-block;
-      margin-top: 20px;
     }
     #card-img {
       width: 100%;
-      max-width: 500px;
-      height: auto;
+      max-width: 600px;
     }
     #signature {
       position: absolute;
       bottom: 20px;
       right: 30px;
-      font-size: 28px;
+      font-size: 24px;
       color: black;
-      font-family: "Microsoft JhengHei", sans-serif;
+      font-family: 'Microsoft JhengHei', sans-serif;
+    }
+    canvas {
+      display: none;
     }
   </style>
 </head>
 <body>
-  <div id="main-app">
-    <h1>給媽媽的一句話</h1>
-    <input type="text" id="nameInput" placeholder="輸入你的名字（或小名）"/><br/>
-    <button onclick="updateSignature()">寫上我的名字</button>
-    <button onclick="showImage()">下載卡片送出愛</button>
-    <button onclick="shareToLine()">分享到 LINE</button>
-    <div id="card-container">
-      <img id="card-img" src="card.png" alt="卡片圖片"/>
-      <div id="signature"></div>
-      <canvas id="canvas" style="display:none"></canvas>
-    </div>
-  </div>
+  <h1>給媽媽的一句話</h1>
+  <input type="text" id="nameInput" placeholder="輸入你的名字（或小名）" />
+  <br />
+  <button onclick="updateSignature()">寫上我的名字</button>
+  <button onclick="showImage()">下載卡片送出愛</button>
+  <button onclick="shareToLine()">分享到 LINE</button>
 
-  <div id="line-block" style="display:none;">
-    <p style="border: 2px dashed red; padding: 16px;">
-      <strong>LINE 內建瀏覽器會擋住下載功能</strong><br/>
-      請點下方按鈕開啟 Chrome 或 Safari<br/><br/>
-      <button onclick="openInBrowser()">用瀏覽器開啟</button>
-    </p>
+  <div id="card-container">
+    <img id="card-img" src="card.png" alt="卡片圖片" />
+    <div id="signature"></div>
+    <canvas id="canvas" width="600" height="600"></canvas>
   </div>
 
   <script>
-    if (navigator.userAgent.toLowerCase().includes("line")) {
-      document.getElementById("line-block").style.display = "block";
-      document.getElementById("main-app").style.display = "none";
-    }
-
-    function openInBrowser() {
-      const ua = navigator.userAgent || navigator.vendor;
-      if (ua.includes("iPhone") || ua.includes("iPad")) {
-        window.location.href = "googlechrome://yuchingkuo-01.github.io/for-you/";
-      } else {
-        window.location.href = "https://yuchingkuo-01.github.io/for-you/";
-      }
-    }
-
     function updateSignature() {
-      const name = document.getElementById("nameInput").value.trim();
-      document.getElementById("signature").textContent = name || "";
+      const name = document.getElementById('nameInput').value.trim();
+      document.getElementById('signature').textContent = name || '';
     }
 
     function showImage() {
       document.fonts.ready.then(() => {
-        const canvas = document.getElementById("canvas");
-        const ctx = canvas.getContext("2d");
-        const image = new Image();
-        image.crossOrigin = "anonymous";
-        image.src = "card.png";
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const img = document.getElementById('card-img');
+        canvas.width = img.width;
+        canvas.height = img.height;
+        ctx.drawImage(img, 0, 0, img.width, img.height);
 
-        image.onload = function () {
-          canvas.width = image.width;
-          canvas.height = image.height;
-          ctx.drawImage(image, 0, 0);
-          const name = document.getElementById("nameInput").value.trim();
-
-          ctx.font = "28px Microsoft JhengHei";
-          ctx.fillStyle = "black";
-          ctx.textAlign = "right";
-          ctx.textBaseline = "bottom";
+        const name = document.getElementById('nameInput').value.trim();
+        if (name) {
+          ctx.font = '24px "Microsoft JhengHei", sans-serif';
+          ctx.fillStyle = 'black';
+          ctx.textAlign = 'right';
           ctx.fillText(name, canvas.width - 30, canvas.height - 20);
+        }
 
-          const dataURL = canvas.toDataURL("image/png");
-          const newWindow = window.open("");
-          newWindow.document.write('<img src="' + dataURL + '" style="width:100%;max-width:500px"/>');
-        };
+        const dataUrl = canvas.toDataURL('image/png');
+        const link = document.createElement('a');
+        link.href = dataUrl;
+        link.download = 'mother_card.png';
+        link.click();
       });
     }
 
     function shareToLine() {
-      const canvas = document.getElementById("canvas");
-      const ctx = canvas.getContext("2d");
-      const image = new Image();
-      image.crossOrigin = "anonymous";
-      image.src = "card.png";
+      document.fonts.ready.then(() => {
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const img = document.getElementById('card-img');
+        canvas.width = img.width;
+        canvas.height = img.height;
+        ctx.drawImage(img, 0, 0, img.width, img.height);
 
-      image.onload = function () {
-        canvas.width = image.width;
-        canvas.height = image.height;
-        ctx.drawImage(image, 0, 0);
-        const name = document.getElementById("nameInput").value.trim();
-
-        ctx.font = "28px Microsoft JhengHei";
-        ctx.fillStyle = "black";
-        ctx.textAlign = "right";
-        ctx.textBaseline = "bottom";
-        ctx.fillText(name, canvas.width - 30, canvas.height - 20);
-
-        const dataURL = canvas.toDataURL("image/png");
-        const blob = dataURItoBlob(dataURL);
-        const file = new File([blob], "card.png", { type: "image/png" });
-        if (navigator.canShare && navigator.canShare({ files: [file] })) {
-          navigator.share({ files: [file] });
-        } else {
-          alert("無法分享，請改用下載功能");
+        const name = document.getElementById('nameInput').value.trim();
+        if (name) {
+          ctx.font = '24px "Microsoft JhengHei", sans-serif';
+          ctx.fillStyle = 'black';
+          ctx.textAlign = 'right';
+          ctx.fillText(name, canvas.width - 30, canvas.height - 20);
         }
-      };
+
+        const dataUrl = canvas.toDataURL('image/png');
+        const shareUrl = encodeURIComponent(dataUrl);
+        window.open(`https://social-plugins.line.me/lineit/share?url=${shareUrl}`, '_blank');
+      });
     }
 
-    function dataURItoBlob(dataURI) {
-      const byteString = atob(dataURI.split(",")[1]);
-      const mimeString = dataURI.split(",")[0].split(":")[1].split(";")[0];
-      const ab = new ArrayBuffer(byteString.length);
-      const ia = new Uint8Array(ab);
-      for (let i = 0; i < byteString.length; i++) {
-        ia[i] = byteString.charCodeAt(i);
-      }
-      return new Blob([ab], { type: mimeString });
+    // 自動跳轉外部瀏覽器
+    if (navigator.userAgent.toLowerCase().includes("line")) {
+      window.location.href = "googlechrome://yuchingkuo-01.github.io/for-you/";
     }
   </script>
 </body>
