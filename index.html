@@ -1,70 +1,54 @@
-
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>母親節卡片</title>
-  <link href="https://fonts.googleapis.com/css2?family=ZCOOL+XiaoWei&display=swap" rel="stylesheet"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>給媽媽的一句話</title>
   <style>
     body {
-      font-family: 'ZCOOL XiaoWei', serif;
+      font-family: "Microsoft JhengHei", sans-serif;
       text-align: center;
       background-color: #fffdf8;
       padding: 20px;
     }
     h1 {
-      font-size: 28px;
-      margin-bottom: 20px;
+      font-size: 24px;
+      margin-bottom: 10px;
     }
     input[type="text"] {
-      font-family: 'ZCOOL XiaoWei', serif;
-      font-size: 20px;
-      padding: 12px 16px;
+      font-size: 18px;
+      padding: 8px 12px;
       width: 80%;
       max-width: 300px;
-      border: 2px solid #ccc;
-      border-radius: 8px;
-      margin-bottom: 15px;
+      margin-bottom: 10px;
     }
     button {
-      font-family: 'ZCOOL XiaoWei', serif;
-      font-size: 18px;
-      padding: 10px 18px;
-      margin: 6px;
+      padding: 10px 16px;
+      font-size: 16px;
+      margin: 5px;
+      background-color: pink;
       border: none;
-      border-radius: 6px;
-      background-color: #ffccd5;
-      color: #333;
-      cursor: pointer;
+      border-radius: 5px;
     }
     #card-container {
       position: relative;
       display: inline-block;
-      max-width: 100%;
+      margin-top: 20px;
     }
     #card-img {
       width: 100%;
-      max-width: 500px;
-      display: block;
+      max-width: 400px;
+      height: auto;
     }
     #signature {
       position: absolute;
-      bottom: 20px;
-      right: 20px;
-      color: #000000;
-      font-size: 28px;
+      bottom: 18%;
+      left: 53%;
+      transform: translate(-50%, 50%);
+      font-size: 20px;
+      font-family: "Microsoft JhengHei", sans-serif;
+      color: #a83232;
       font-weight: bold;
-      font-family: 'ZCOOL XiaoWei', serif;
-      text-shadow: 1px 1px 2px white;
-    }
-    #line-block {
-      background: #fff4f6;
-      border: 2px dashed #f55;
-      padding: 20px;
-      margin: 30px auto;
-      max-width: 400px;
-      border-radius: 10px;
     }
     canvas {
       display: none;
@@ -72,74 +56,83 @@
   </style>
 </head>
 <body>
-  <div id="line-block" style="display:none;">
-    <h3>LINE 內建瀏覽器會擋住下載功能</h3>
-    <p>請點下方按鈕開啟 Chrome 或 Safari</p>
-    <a href="https://yuchingkuo-01.github.io/for-you/" target="_blank">
-      <button>用瀏覽器開啟</button>
-    </a>
-  </div>
 
-  <div id="main-app" style="display:none;">
-    <h1>給媽媽的一句話</h1>
-    <input type="text" id="nameInput" placeholder="輸入你的名字（或小名）" />
-    <br />
-    <button onclick="updateSignature()">寫上我的名字</button>
-    <button onclick="showImage()">下載卡片送出愛</button>
+<!-- 自動跳轉外部瀏覽器（僅 LINE） -->
+<script>
+  if (navigator.userAgent.toLowerCase().includes("line")) {
+    window.location.href = "googlechrome://yuchingkuo-01.github.io/for-you/";
+  }
+</script>
 
-    <div id="card-container">
-      <img id="card-img" src="card.png" alt="卡片圖片" />
-      <div id="signature"></div>
-    </div>
+<h1>給媽媽的一句話</h1>
+<input type="text" id="nameInput" placeholder="在這裡輸入你的名字（或小名）" />
+<br>
+<button onclick="updateSignature()">寫上我的名字</button>
+<button onclick="showImage()">下載卡片送出愛</button>
+<button onclick="shareToLine()">分享到 LINE</button>
 
-    <canvas id="canvas"></canvas>
-  </div>
-// 如果在 LINE 裡開啟，自動導到外部瀏覽器
-if (navigator.userAgent.toLowerCase().includes("line")) {
-  window.location.href = "googlechrome://yuchingkuo-01.github.io/for-you/";
-}
-  <script>
-    function updateSignature() {
-      const name = document.getElementById('nameInput').value.trim();
-      document.getElementById('signature').textContent = name || '';
-    }
+<div id="card-container">
+  <img id="card-img" src="card.png" alt="卡片圖片">
+  <div id="signature"></div>
+  <canvas id="canvas" width="800" height="1200"></canvas>
+</div>
 
-    function showImage() {
-      document.fonts.ready.then(() => {
-        const canvas = document.getElementById('canvas');
-        const ctx = canvas.getContext('2d');
-        const img = document.getElementById('card-img');
-        const signature = document.getElementById('signature').textContent;
+<script>
+  function updateSignature() {
+    const name = document.getElementById("nameInput").value.trim();
+    document.getElementById("signature").textContent = name || "";
+  }
 
-        const image = new Image();
-        image.crossOrigin = "anonymous";
-        image.src = img.src;
-        image.onload = () => {
-          canvas.width = image.width;
-          canvas.height = image.height;
+  function showImage() {
+    document.fonts.ready.then(() => {
+      const canvas = document.getElementById("canvas");
+      const ctx = canvas.getContext("2d");
+      const img = document.getElementById("card-img");
 
-          ctx.drawImage(image, 0, 0);
-          ctx.font = "48px 'ZCOOL XiaoWei'";
-          ctx.fillStyle = "#000000";
-          ctx.textAlign = "right";
-          ctx.textBaseline = "bottom";
-          ctx.shadowColor = "white";
-          ctx.shadowBlur = 4;
-          ctx.fillText(signature, canvas.width - 20, canvas.height - 20);
+      canvas.width = img.naturalWidth;
+      canvas.height = img.naturalHeight;
 
-          const dataUrl = canvas.toDataURL("image/png");
-          const newWindow = window.open();
-          newWindow.document.write('<img src="' + dataUrl + '" style="width:100%;max-width:500px;" />');
-        };
+      ctx.drawImage(img, 0, 0);
+      ctx.font = "48px Microsoft JhengHei";
+      ctx.fillStyle = "#a83232";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.shadowColor = "white";
+      ctx.shadowBlur = 2;
+
+      const name = document.getElementById("nameInput").value.trim();
+      ctx.fillText(name, canvas.width * 0.53, canvas.height * 0.82);
+
+      const dataUrl = canvas.toDataURL("image/png");
+      const win = window.open();
+      win.document.write(`<img src="${dataUrl}" style="width:100%;max-width:500px;">`);
+    });
+  }
+
+  function shareToLine() {
+    const canvas = document.getElementById("canvas");
+    const dataUrl = canvas.toDataURL("image/png");
+    const blob = dataURLtoBlob(dataUrl);
+    const file = new File([blob], "mom-card.png", { type: "image/png" });
+
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      navigator.share({
+        files: [file],
       });
-    }
-
-    const isLine = navigator.userAgent.toLowerCase().includes("line");
-    if (isLine) {
-      document.getElementById("line-block").style.display = "block";
     } else {
-      document.getElementById("main-app").style.display = "block";
+      alert("裝置不支援直接分享，請長按圖片儲存後手動傳送");
     }
-  </script>
+  }
+
+  function dataURLtoBlob(dataUrl) {
+    const arr = dataUrl.split(","), mime = arr[0].match(/:(.*?);/)[1],
+      bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+    for (let i = 0; i < n; i++) {
+      u8arr[i] = bstr.charCodeAt(i);
+    }
+    return new Blob([u8arr], { type: mime });
+  }
+</script>
+
 </body>
 </html>
