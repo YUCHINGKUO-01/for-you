@@ -1,110 +1,121 @@
+
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>母親節卡片</title>
+  <link href="https://fonts.googleapis.com/css2?family=ZCOOL+XiaoWei&display=swap" rel="stylesheet">
   <style>
     body {
       margin: 0;
-      font-family: "Microsoft JhengHei", sans-serif;
       background-color: #fffdf8;
-      padding: 20px;
+      font-family: 'ZCOOL XiaoWei', serif;
       text-align: center;
-    }
-    #line-block {
-      display: none;
-      border: 2px dashed #f88;
       padding: 20px;
-      margin-top: 30px;
-      background-color: #fff0f0;
     }
-    #line-block p {
+    h1 {
+      font-size: 24px;
+    }
+    input[type="text"] {
       font-size: 18px;
+      padding: 8px;
+      width: 80%;
+      max-width: 300px;
       margin: 10px 0;
-      color: #222;
     }
-    #line-block button {
-      background-color: #fbb;
-      border: none;
-      padding: 10px 20px;
+    button {
       font-size: 16px;
+      margin: 5px;
+      padding: 10px 16px;
+      background-color: pink;
+      border: none;
       cursor: pointer;
-      border-radius: 5px;
+    }
+    #card-img {
+      width: 100%;
+      max-width: 500px;
+    }
+    #signature {
+      position: absolute;
+      right: 30px;
+      bottom: 60px;
+      font-size: 20px;
+      color: black;
+      font-family: 'ZCOOL XiaoWei', serif;
+    }
+    #card-container {
+      position: relative;
+      display: inline-block;
     }
   </style>
 </head>
 <body>
-  <div id="line-block">
-    <p><strong>LINE 內建瀏覽器會擋住下載功能</strong></p>
-    <p>請點下方按鈕開啟 Chrome 或 Safari</p>
-    <button onclick="openInBrowser()">用瀏覽器開啟</button>
-  </div>
+  <h1>給媽媽的一句話</h1>
+  <input type="text" id="nameInput" placeholder="輸入你的名字（或小名）" />
+  <br />
+  <button onclick="updateSignature()">寫上我的名字</button>
+  <button onclick="showImage()">下載卡片送出愛</button>
+  <button onclick="shareToLine()">分享到 LINE</button>
 
-  <div id="main-app" style="display: none;">
-    <h1>給媽媽的一句話</h1>
-    <input type="text" id="nameInput" placeholder="在這裡輸入你的名字（或小名）" />
-    <br /><br />
-    <button onclick="updateSignature()">寫上我的名字</button>
-    <button onclick="downloadImage()">下載卡片送出愛</button>
-    <br /><br />
-    <div id="card-container">
-      <img id="card-img" src="card.png" alt="卡片圖片" style="max-width: 100%; height: auto;" />
-      <div id="signature" style="
-        font-size: 20px;
-        position: absolute;
-        top: 480px;
-        left: 50%;
-        transform: translateX(-50%);
-        color: #800000;
-        font-weight: bold;
-        font-family: 'Microsoft JhengHei', sans-serif;
-      "></div>
-    </div>
-    <canvas id="canvas" width="800" height="1200" style="display:none;"></canvas>
+  <div id="card-container">
+    <img id="card-img" src="card.png" alt="卡片圖片" />
+    <div id="signature"></div>
+    <canvas id="canvas" style="display:none;"></canvas>
   </div>
 
   <script>
-    if (navigator.userAgent.toLowerCase().includes("line")) {
-      document.getElementById("line-block").style.display = "block";
-    } else {
-      document.getElementById("main-app").style.display = "block";
-    }
-
-    function openInBrowser() {
-      const ua = navigator.userAgent.toLowerCase();
-      const url = "https://yuchingkuo-01.github.io/for-you/";
-      if (ua.includes("iphone") || ua.includes("ipad")) {
-        window.location.href = "googlechrome://" + url.replace(/^https?:\/\//, "");
-      } else {
-        window.location.href = url;
-      }
-    }
-
     function updateSignature() {
       const name = document.getElementById("nameInput").value.trim();
       document.getElementById("signature").textContent = name || "";
     }
 
-    function downloadImage() {
-      const canvas = document.getElementById("canvas");
-      const ctx = canvas.getContext("2d");
-      const img = document.getElementById("card-img");
-      const text = document.getElementById("signature").textContent;
+    function showImage() {
+      document.fonts.ready.then(() => {
+        const canvas = document.getElementById("canvas");
+        const ctx = canvas.getContext("2d");
+        const img = document.getElementById("card-img");
+        canvas.width = img.naturalWidth;
+        canvas.height = img.naturalHeight;
 
-      canvas.width = img.naturalWidth;
-      canvas.height = img.naturalHeight;
-      ctx.drawImage(img, 0, 0);
+        ctx.drawImage(img, 0, 0);
 
-      ctx.font = "48px Microsoft JhengHei";
-      ctx.fillStyle = "#800000";
-      ctx.textAlign = "center";
-      ctx.fillText(text, canvas.width / 2, 1080);
+        const name = document.getElementById("nameInput").value.trim();
+        ctx.font = "40px 'ZCOOL XiaoWei'";
+        ctx.fillStyle = "black";
+        ctx.textAlign = "right";
+        ctx.fillText(name, canvas.width - 30, canvas.height - 40);
 
-      const link = document.createElement("a");
-      link.download = "mothers_card.png";
-      link.href = canvas.toDataURL("image/png");
-      link.click();
+        const dataURL = canvas.toDataURL("image/png");
+        const newWindow = window.open();
+        newWindow.document.write('<img src="' + dataURL + '" style="width:100%;max-width:500px"/>');
+      });
+    }
+
+    function shareToLine() {
+      document.fonts.ready.then(() => {
+        const canvas = document.getElementById("canvas");
+        const ctx = canvas.getContext("2d");
+        const img = document.getElementById("card-img");
+        canvas.width = img.naturalWidth;
+        canvas.height = img.naturalHeight;
+
+        ctx.drawImage(img, 0, 0);
+
+        const name = document.getElementById("nameInput").value.trim();
+        ctx.font = "40px 'ZCOOL XiaoWei'";
+        ctx.fillStyle = "black";
+        ctx.textAlign = "right";
+        ctx.fillText(name, canvas.width - 30, canvas.height - 40);
+
+        const dataURL = canvas.toDataURL("image/png");
+        const lineShareURL = "https://line.me/R/msg/text/?" + encodeURIComponent(dataURL);
+        window.location.href = lineShareURL;
+      });
+    }
+
+    if (navigator.userAgent.toLowerCase().includes("line")) {
+      window.location.href = "googlechrome://" + window.location.href.replace(/^https?:\/\//, "");
     }
   </script>
 </body>
